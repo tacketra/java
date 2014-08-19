@@ -31,6 +31,17 @@
 
 package src.com.myjayvah.guiFrame;
 
+import java.awt.Color;
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.io.File;
+import java.io.*;
+import java.util.Scanner;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -66,6 +77,7 @@ import javax.swing.SwingWorker;
 /* FrameDemo.java requires no other files. */
 public class FrameDemo extends JPanel implements ActionListener {
     String current25Version = "alpha";
+    String killNineString = "kill -9 ";//kill all colorpickerdemo2 proccesses when stop called from gui(this class)
     String programPath ="bash runT25Program";
     JButton startButton, stopButton;
     JFrame frame = new JFrame("t-25 sound mod");
@@ -154,7 +166,7 @@ public class FrameDemo extends JPanel implements ActionListener {
                 System.out.println(tVersionStr);
                 Runtime.getRuntime().exec(tVersionStr);
             }catch( java.io.IOException erorr){
-                
+                System.out.println("error trying to run Cpd2 from FrameDemo start button");
             }
         }
         else if( "disableStop".equals(e.getActionCommand()) ){
@@ -165,6 +177,43 @@ public class FrameDemo extends JPanel implements ActionListener {
             startButton.addActionListener(this);
             frame.getContentPane().add( startButton, BorderLayout.PAGE_END);
             System.out.println("STOP button pressed");
+            
+            //kill all ColorPickerDemo2 processes, since gui called the program
+            //to stop we kill all colorpickerdemo2 processes in the background
+            try{
+                String line =" ";
+                Process process = Runtime.getRuntime ().exec("jps -v" );
+                OutputStream stdin = process.getOutputStream ();
+                InputStream stderr = process.getErrorStream ();
+                InputStream stdout = process.getInputStream ();
+                
+                Scanner scan = new Scanner( System.in );
+                
+                BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
+                String input = " ";
+                //line = reader.readLine();
+                //System.out.println(" line is = " + line);
+                while( line != null){
+                    line = reader.readLine();
+                    //System.out.println(line);
+                    if( line == null){ break; }
+                    else if( line.contains("ColorPickerDemo2")){
+                        String CpdProcessId = line.substring( 0, line.indexOf("ColorPickerDemo2") -1);
+                        //System.out.println( CpdProcessId);
+                        killNineString+= CpdProcessId + " ";
+                        //add ColorPickerDemo2 process id's that are running in the background to the kill -9 statement, so when we run kill -9 all Cpd2's will be killed since stop is called
+                        
+                    }
+                }
+                //System.out.println("lines all read");
+                try{
+                    Runtime.getRuntime().exec(killNineString);
+                }catch(java.io.IOException err){
+                    System.out.println("error killing -9 all Cpd2s in background");
+                }
+            }catch( java.io.IOException erorr){
+                System.out.println("error reading all Cpds running in backgroudn");
+            }
         }
         else {
             JComboBox cb = (JComboBox)e.getSource();
