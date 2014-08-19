@@ -1,0 +1,16 @@
+tell application "QuickTime Player"
+     end treturn get the bounds of the front window
+     #tell application "System Events"
+     #end tell
+     myVar = result
+end tell
+end telltell application "QuickTime Player"
+     return get the bounds of the front window
+     tell application "System Events"
+     	  read "~/../../Users/Ryan/myCode/javaw/T25Mod/src/heyMan/testRy.txt" as Å´class utf8Åª
+	  set fd to open for access "~/../../Users/Ryan/myCode/javaw/T25Mod/src/heyMan/testRy.txt" with write permission
+	  set eof fd to 0
+	  write "hey buddy" to fd as Å´class utf8Åª
+	  close access fd
+     end tell
+end tell

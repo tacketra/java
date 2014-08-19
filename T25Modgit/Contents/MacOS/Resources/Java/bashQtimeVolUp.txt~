@@ -1,0 +1,2 @@
+#osascript ../qtimescripts/qTimeVolUp.scpt
+osascript com/myjayvah/qtimescripts/qTimeVolUp.scpt
