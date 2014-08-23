@@ -28,7 +28,7 @@ public class ColorPickerDemo2 {
     final Grb yellowGrb = new Grb(200, 200, 0, 255, 255, 20);
     final Grb orangeGrb = new Grb(85, 200, 0, 130, 255, 20);//RGB: 244, 93, 0
     //orange examples RGB: 244, 94, 0
-    final Grb greenGrb = new Grb(180, 0, 0, 255, 50, 50);//HAVE NOT TESTED
+    final Grb greenGrb = new Grb(150, 30, 40, 240, 55, 85);//HAVE NOT TESTED
     //green examples: RGB: 28, 202, 21.  RGB: 28, 212, 0.  RGB: 28, 213, 41.
     //RGB: 30, 213, 0
     final Grb whiteGrb = new Grb(220, 220, 220, 255, 255, 255);
@@ -146,7 +146,7 @@ public class ColorPickerDemo2 {
     //x 140-200 is left side of white box, right x is 315-370
     //y is 530-550.
     /*boolean checkWhiteBox(  int leftWhiteStartX , int leftWhiteEndX , int rightWhiteStartX , int rightWhiteEndX , int whiteStartY , int whiteEndY ){*/
-    boolean checkWhiteBox(){
+    boolean checkWhiteBox(){//this should use checkNextPixelColor, neater but slower
         try {
             Robot robot = new Robot();
             Color color = robot.getPixelColor(1000, 568);
@@ -187,6 +187,7 @@ public class ColorPickerDemo2 {
             Color color = robot.getPixelColor(1000, 568);
             for(int x = barStartX ; x < barEndX; x++){
                 color = robot.getPixelColor(x, barY);
+                System.out.print("(" + x + "," + barY + ") ");
                 if (checkNextMovePixels(color) == false){
                     //System.out.println("checkBar g: " + color.getGreen() + ", r: " + color.getRed() + ",b: " + color.getBlue() + " , x= " + x + " ,yellowbary= " +barY);
                     return false;
@@ -210,8 +211,21 @@ public class ColorPickerDemo2 {
      */
     boolean checkNextMovePixels(Color color){
         if (color.getGreen() >= myColor.green && myColor.greenEnd >= color.getGreen() &&  color.getRed() >= myColor.red && myColor.redEnd >= color.getRed()  && color.getBlue() >= myColor.blue && myColor.blueEnd >= color.getBlue() ){
+            /*
+            System.out.println("we true!!!!!");
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("green: " + color.getGreen() + ", red: " + color.getRed() + ", blue: " + color.getBlue() );
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            */
             return true;
         }
+        //System.out.println("FALSE -  green: " + color.getGreen() + ", red: " + color.getRed() + ", blue: " + color.getBlue() );
         return false;
     }
     

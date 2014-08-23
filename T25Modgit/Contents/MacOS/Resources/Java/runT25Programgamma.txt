@@ -1,1 +1,1 @@
-java com/myjayvah/t25mod/ColorPickerDemo2 gamma
+java src/com/myjayvah/t25mod/ColorPickerDemo2 gamma
