@@ -25,7 +25,7 @@ public class ColorPickerDemo2 {
     final static long TOTAL_TIME = SECOND*20;
     final static double lWhiteStartX = .115625, lWhiteEndX = .16, rWhiteStartX = .245;
     final static double rWhiteEndX= .289, wTopY = .691, wBottomY = .711, bStartX = .115625, bEndX = .275, bY = .793;
-    final Grb yellowGrb = new Grb(200, 200, 0, 255, 255, 20);
+    final Grb yellowGrb = new Grb(195, 175, 0, 255, 255, 20);
     final Grb orangeGrb = new Grb(85, 200, 0, 130, 255, 20);//RGB: 244, 93, 0
     //orange examples RGB: 244, 94, 0
     final Grb greenGrb = new Grb(150, 30, 40, 240, 55, 85);//HAVE NOT TESTED
@@ -211,7 +211,7 @@ public class ColorPickerDemo2 {
      */
     boolean checkNextMovePixels(Color color){
         if (color.getGreen() >= myColor.green && myColor.greenEnd >= color.getGreen() &&  color.getRed() >= myColor.red && myColor.redEnd >= color.getRed()  && color.getBlue() >= myColor.blue && myColor.blueEnd >= color.getBlue() ){
-            /*
+            
             System.out.println("we true!!!!!");
             System.out.println();
             System.out.println();
@@ -222,10 +222,10 @@ public class ColorPickerDemo2 {
             System.out.println();
             System.out.println();
             System.out.println();
-            */
+            
             return true;
         }
-        //System.out.println("FALSE -  green: " + color.getGreen() + ", red: " + color.getRed() + ", blue: " + color.getBlue() );
+        System.out.println("FALSE -  green: " + color.getGreen() + ", red: " + color.getRed() + ", blue: " + color.getBlue() );
         return false;
     }
     
