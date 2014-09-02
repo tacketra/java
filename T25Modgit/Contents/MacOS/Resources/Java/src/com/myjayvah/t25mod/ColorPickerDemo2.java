@@ -23,8 +23,13 @@ public class ColorPickerDemo2 {
     final static long SECOND = 1000000000;//nano
     final static long MOVE_LENGTH =4000;//mil,how long volume will be on, so t-25 move can be heard
     final static long TOTAL_TIME = SECOND*20;
+    
     final static double lWhiteStartX = .115625, lWhiteEndX = .16, rWhiteStartX = .245;
     final static double rWhiteEndX= .289, wTopY = .691, wBottomY = .711, bStartX = .115625, bEndX = .275, bY = .793;
+    //below should be in all caps!!!
+    final static String[][] t25TitleArray = new String[][] { {"Ab Intervals.mp4","alpha"}, {"Cardio.mp4","alpha"}, {"Core Cardio.mp4","beta"} , {"Core Speed.mp4","idk"} , {"Dynamic Core.mp4","beta"} , {"Extreme Cardio.mp4","gamma"} , {"Lower Focus.mp4","alpha"} , {"Pyramid.mp4","gamma"} , {"Rip't Circuit.mp4","beta"} , {"Rip't Up.mp4","gamma"} , {"Speed 1.0.mp4","alpha"} , {"Speed 2.0.mp4","beta"} , {"Speed 3.0.mp4","gamma"} , {"Total Body Circuit.mp4","alpha"} , {"Upper Focus.mp4","beta"}};
+    String currentVideoName = "";//total body circiutm.mp4 and below would be alpha
+    String currentVideoVersion = ""; //alpha,beta or gamma
     final Grb yellowGrb = new Grb(195, 175, 0, 255, 255, 20);
     final Grb orangeGrb = new Grb(85, 200, 0, 130, 255, 20);//RGB: 244, 93, 0
     //orange examples RGB: 244, 94, 0
@@ -39,9 +44,10 @@ public class ColorPickerDemo2 {
     //0,1 = x,y of upper left corner position in screen. 2,3 = x,y lower right corner
     int leftWhiteStartX =0, leftWhiteEndX =0, rightWhiteStartX =0, rightWhiteEndX =0, whiteStartY=0 ,  whiteEndY=0, barStartX = 0, barEndX = 0, barY = 0;
     
-    ColorPickerDemo2(String col){
-        myColorName = col;
+    ColorPickerDemo2(){
+        //myColorName = col; //used to pass String col into ColorPickerDemo2 from command line
         String bashqTimeBounds = "bash bashQtimeBounds.txt";
+        String bashqTimeName = "bash bashQtimeName.txt";
         try{//putting the winodw bounds of quicktime t25 window into qTimeWindowBoundsArray
             String line =" ";
             Process process = Runtime.getRuntime ().exec(bashqTimeBounds );
@@ -106,7 +112,35 @@ public class ColorPickerDemo2 {
             barY = (int) DbarY;
             
         }catch (java.io.IOException e){
-            System.out.println("error running volume adjuster");
+            System.out.println("error getting bounds of current t25 video");
+        }
+        
+        try{//putting the winodw bounds of quicktime t25 window into qTimeWindowBoundsArray
+            String line =" ";
+            Process process = Runtime.getRuntime ().exec(bashqTimeName );
+            OutputStream stdin = process.getOutputStream ();
+            InputStream stderr = process.getErrorStream ();
+            InputStream stdout = process.getInputStream ();
+            
+            Scanner scan = new Scanner( System.in );
+            
+            BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
+            String input = " ";
+            line = reader.readLine() ;//we add space to force last number in the
+            //bounds string to hit the first if statement in the for loop below
+            //System.out.println("line after reader = " + line);
+            System.out.println(" name of current video is: " + line);
+            currentVideoName = line; //get name of current video from qtimeplayer
+            for(int i = 0; i < ColorPickerDemo2.t25TitleArray.length; i++){
+                if( ColorPickerDemo2.t25TitleArray[i][0].equals(currentVideoName) ){
+                    currentVideoVersion = ColorPickerDemo2.t25TitleArray[i][1];
+                    break;//get version value of current video e.g. speed 3.0 = gamma
+                }
+            }
+            myColorName = currentVideoVersion; //lazy need to switch myCOlorName with this in other parts of code, other methods
+            System.out.println("name of current version is: " + myColorName);
+        }catch (java.io.IOException e){
+            System.out.println("error getting name of t25 video playing");
         }
     }
     
@@ -341,7 +375,9 @@ public class ColorPickerDemo2 {
          }catch ( java.lang.InterruptedException e ){}
          */
         System.out.println("starting t25 SOUND mod");
-        ColorPickerDemo2 cpd = new ColorPickerDemo2((String) args[0] );
+        
+        //ColorPickerDemo2 cpd = new ColorPickerDemo2((String) args[0] );
+        ColorPickerDemo2 cpd = new ColorPickerDemo2();
         cpd.startVideo(25);
         System.out.println("VIDEO OVER");
     }

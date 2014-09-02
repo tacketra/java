@@ -1,0 +1,6 @@
+tell application "QuickTime Player"
+     tell front document
+     	  copy name of the front document  to name
+     	  return name
+     end tell
+end tell

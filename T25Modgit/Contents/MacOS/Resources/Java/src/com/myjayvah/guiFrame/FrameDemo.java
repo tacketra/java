@@ -73,6 +73,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+//removed the pick alpha, beta, gamma option since that is chosen by video you chose title, like speed 1.0 will pick alpha, dynamic core will pick beta etc.
 
 /* FrameDemo.java requires no other files. */
 public class FrameDemo extends JPanel implements ActionListener {
@@ -119,12 +120,14 @@ public class FrameDemo extends JPanel implements ActionListener {
         frame.getContentPane().add(label1, BorderLayout.CENTER);
         
         //Set up the combo box (alpha,beta, gamma)
+        //no longer using this!, this is set up behind the scenes by video name
+        /*
         String[] t25AlphaBetaGamma = {"-none selected-", "alpha", "beta", "gamma"};
         JComboBox t25AbgList = new JComboBox(t25AlphaBetaGamma);
         t25AbgList.setSelectedIndex(0);
         t25AbgList.addActionListener(this);
         frame.getContentPane().add( t25AbgList, BorderLayout.PAGE_START);
-        
+        */
         //set up start and stop buttons
         startButton = new JButton("Start !");
         startButton.setActionCommand("disableStart");
@@ -214,12 +217,12 @@ public class FrameDemo extends JPanel implements ActionListener {
             }catch( java.io.IOException erorr){
                 System.out.println("error reading all Cpds running in backgroudn");
             }
-        }
+        }/*//no longer using this, done for the user
         else {
             JComboBox cb = (JComboBox)e.getSource();
             current25Version = (String)cb.getSelectedItem();
             System.out.println(current25Version);
-        }
+        }*/
     }
     
     public static void main(String[] args) {
