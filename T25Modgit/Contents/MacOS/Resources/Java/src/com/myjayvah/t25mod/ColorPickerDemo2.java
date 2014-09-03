@@ -297,10 +297,10 @@ public class ColorPickerDemo2 {
         }
     }
     
-    //even though qtimeduration for vid will be returned as double milleseconds won't matter for this methods purpose which is mainly to know when the 25 miniture workout has started, while it is not over etc.
-    int getVideoCurrentSeconds(){//return how long the video has been playing in seconds
+    //returns current seconds of video just starting would be 0.0 and 1:20 would be 80.0 etc.
+    double getVideoCurrentSeconds(){//return how long the video has been playing in seconds
         String bashqTimeDuration = "bash bashQtimeDuration.txt";
-        int duration = 0;
+        double duration = 0;
         try{//putting the winodw bounds of quicktime t25 window into qTimeWindowBoundsArray
             String line =" ";
             Process process = Runtime.getRuntime ().exec( bashqTimeDuration );
@@ -310,7 +310,7 @@ public class ColorPickerDemo2 {
             Scanner scan = new Scanner( System.in );
             BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
             line = reader.readLine(); //duration string
-            duration = Integer.parseInt(line);//convert duration (as a string) to duration int
+            duration = Double.parseDouble(line);//convert duration (as a string) to duration int
         }catch (java.io.IOException e){
             System.out.println("error running volume adjuster");
         }
@@ -351,7 +351,7 @@ public class ColorPickerDemo2 {
                 System.out.println("error trying to sleep in while loop for video duration in startVideo");
             }
         }
-        int currentSeconds = getVideoCurrentSeconds();
+        double currentSeconds = getVideoCurrentSeconds();
         if ( currentSeconds >= 25 && currentSeconds <= 35){
             volumeUp(true);
             try{
