@@ -116,12 +116,8 @@ public class ColorPickerDemo2 {
         }catch (java.io.IOException e){
             System.out.println("error getting bounds of current t25 video");
         }
-        
-        try{//getting name of current t25 video playing
-            getAndSetVideoName();
-        }catch (java.io.IOException e){
-            System.out.println("error getting name of t25 video playing");
-        }
+        //get name of current video playing e.g. total body circuit.mp4, speed 3.0.mp4 etc.
+        getAndSetVideoName();
     }
     
     public class Grb{
@@ -154,7 +150,7 @@ public class ColorPickerDemo2 {
         
     }
     
-    string getAndSetVideoName(){
+    String getAndSetVideoName(){
         String bashqTimeName = "bash bashQtimeName.txt";//script that grabs name from the current t25 video playing in quickTimePlayer
         try{
             String line =" ";
@@ -315,7 +311,7 @@ public class ColorPickerDemo2 {
             BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
             line = reader.readLine(); //duration string
             duration = Integer.parseInt(line);//convert duration (as a string) to duration int
-        }catch ((java.io.IOException e){
+        }catch (java.io.IOException e){
             System.out.println("error running volume adjuster");
         }
         return duration;
