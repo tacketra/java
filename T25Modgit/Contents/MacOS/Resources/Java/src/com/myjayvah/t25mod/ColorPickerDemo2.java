@@ -80,7 +80,9 @@ public class ColorPickerDemo2 {
                         count++;
                     }
                 }
-            }   //lowerright x cordinate - upper left x cordinate, then same for y below
+            }
+            //gross lines below untill the try catch statement are just initiliazing the bounds of the current quicktimeplayer window
+            //lowerright x cordinate - upper left x cordinate, then same for y below
             qTimeWindowWidth = qTimeWindowBoundsArray[2] - qTimeWindowBoundsArray[0];
             qTimeWindowWidthOffset = qTimeWindowBoundsArray[0]; //upper left x of 4 means = 4
             qTimeWindowHeight = qTimeWindowBoundsArray[3] - qTimeWindowBoundsArray[1];
@@ -115,30 +117,8 @@ public class ColorPickerDemo2 {
             System.out.println("error getting bounds of current t25 video");
         }
         
-        try{//putting the winodw bounds of quicktime t25 window into qTimeWindowBoundsArray
-            String line =" ";
-            Process process = Runtime.getRuntime ().exec(bashqTimeName );
-            OutputStream stdin = process.getOutputStream ();
-            InputStream stderr = process.getErrorStream ();
-            InputStream stdout = process.getInputStream ();
-            
-            Scanner scan = new Scanner( System.in );
-            
-            BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
-            String input = " ";
-            line = reader.readLine() ;//we add space to force last number in the
-            //bounds string to hit the first if statement in the for loop below
-            //System.out.println("line after reader = " + line);
-            System.out.println(" name of current video is: " + line);
-            currentVideoName = line; //get name of current video from qtimeplayer
-            for(int i = 0; i < ColorPickerDemo2.t25TitleArray.length; i++){
-                if( ColorPickerDemo2.t25TitleArray[i][0].equals(currentVideoName) ){
-                    currentVideoVersion = ColorPickerDemo2.t25TitleArray[i][1];
-                    break;//get version value of current video e.g. speed 3.0 = gamma
-                }
-            }
-            myColorName = currentVideoVersion; //lazy need to switch myCOlorName with this in other parts of code, other methods
-            System.out.println("name of current version is: " + myColorName);
+        try{//getting name of current t25 video playing
+            getAndSetVideoName();
         }catch (java.io.IOException e){
             System.out.println("error getting name of t25 video playing");
         }
@@ -172,6 +152,35 @@ public class ColorPickerDemo2 {
          }*/
         
         
+    }
+    
+    string getAndSetVideoName(){
+        String bashqTimeName = "bash bashQtimeName.txt";//script that grabs name from the current t25 video playing in quickTimePlayer
+        try{
+            String line =" ";
+            Process process = Runtime.getRuntime ().exec(bashqTimeName );
+            OutputStream stdin = process.getOutputStream ();
+            InputStream stderr = process.getErrorStream ();
+            InputStream stdout = process.getInputStream ();
+            
+            Scanner scan = new Scanner( System.in );
+            
+            BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
+            line = reader.readLine() ;
+            System.out.println(" name of current video is: " + line);
+            currentVideoName = line; //get name of current video from qtimeplayer
+            for(int i = 0; i < ColorPickerDemo2.t25TitleArray.length; i++){
+                if( ColorPickerDemo2.t25TitleArray[i][0].equals(currentVideoName) ){
+                    currentVideoVersion = ColorPickerDemo2.t25TitleArray[i][1];
+                    break;//get version value of current video e.g. speed 3.0 = gamma
+                }
+            }
+            myColorName = currentVideoVersion; //lazy need to switch myCOlorName with this in other parts of code, other methods
+            System.out.println("name of current version is: " + myColorName);
+        }catch (java.io.IOException e){
+            System.out.println("error getting name of t25 video playing");
+        }
+        return currentVideoName;//return name of current t25 video
     }
     
     //whitebox is the next move that appears above the current move counter for 5 seconds and after
@@ -292,6 +301,26 @@ public class ColorPickerDemo2 {
         }
     }
     
+    //even though qtimeduration for vid will be returned as double milleseconds won't matter for this methods purpose which is mainly to know when the 25 miniture workout has started, while it is not over etc.
+    int getVideoCurrentSeconds(){//return how long the video has been playing in seconds
+        String bashqTimeDuration = "bash bashQtimeDuration.txt";
+        int duration = 0;
+        try{//putting the winodw bounds of quicktime t25 window into qTimeWindowBoundsArray
+            String line =" ";
+            Process process = Runtime.getRuntime ().exec( bashqTimeDuration );
+            OutputStream stdin = process.getOutputStream ();
+            InputStream stderr = process.getErrorStream ();
+            InputStream stdout = process.getInputStream ();
+            Scanner scan = new Scanner( System.in );
+            BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
+            line = reader.readLine(); //duration string
+            duration = Integer.parseInt(line);//convert duration (as a string) to duration int
+        }catch ((java.io.IOException e){
+            System.out.println("error running volume adjuster");
+        }
+        return duration;
+    }
+    
     void startVideo(int minutes){
         //System.out.println("my color name is " + myColorName);
         System.out.println("t25 version is: " + myColorName);
@@ -317,7 +346,28 @@ public class ColorPickerDemo2 {
         
         long startTime = System.nanoTime();
         long videoTime = minutes * (SECOND*60); //second*60 = 1 minute
-        while( System.nanoTime() - startTime  < videoTime){//until video has fully played, e.g. minutes is 25, while this program has run < 25 minutes
+        //now that I have a qTimeDuration.scpt I can just get length of video left
+        volumeUp(false);//make video init quiet untill actual 25 minute workout starts
+        while( getVideoCurrentSeconds() < 25){
+            try{
+                Thread.sleep(1000);//sleep a second and try again
+            }catch( java.lang.InterruptedException e){
+                System.out.println("error trying to sleep in while loop for video duration in startVideo");
+            }
+        }
+        int currentSeconds = getVideoCurrentSeconds();
+        if ( currentSeconds >= 25 && currentSeconds <= 35){
+            volumeUp(true);
+            try{
+                Thread.sleep(10000);//sleep 10 seconds( usually actual 25min workout starts between 25-35
+            }catch( java.lang.InterruptedException e){
+                System.out.println("error trying to sleep in while loop for video duration in startVideo");
+            }
+            volumeUp(false);//workout starting, volume will come back now only for 5 seconds for each move
+        }
+        
+        //while( System.nanoTime() - startTime  < videoTime){//until video has fully played, e.g. minutes is 25, while this program has run < 25 minutes
+        while( getVideoCurrentSeconds() < 1535){//25 minute workout = 1500 seconds, + 25-35 secs before workout
             //while(true){
             //WHITE: x 140-200 is left side of white box, right x is 315-370, y is 530-550.
             //Yellow BAR : x 138 -374, y is 608, the end x should really be 325
